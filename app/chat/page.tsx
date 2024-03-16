@@ -11,6 +11,7 @@ async function getData() {
     select: {
       message: true,
       id: true,
+      email: true,
       User: {
         select: {
           name: true,
@@ -30,19 +31,14 @@ async function getData() {
 async function ChatPage() {
   const session = await getServerSession(authOptions);
   const data = await getData();
-
+  // console.log('server');
+  // console.log(data);
   if (!session) {
     redirect('/');
   }
 
   return (
     <main className="p-3 flex flex-col gap-5">
-      <div>
-        <p>Server</p>
-        {data?.map((item, index) => (
-          <div key={index}>{item.message}</div>
-        ))}
-      </div>
       <Chat data={data as any} />
       <Form />
     </main>

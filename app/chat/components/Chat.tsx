@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Pusher from 'pusher-js';
-import { deleteMessage } from '@/app/actions/action';
+import DeleteBtn from './DeleteBtn';
 
 interface Props {
   data: {
@@ -12,17 +12,20 @@ interface Props {
     };
     message: string;
     id: string;
+    email: string;
   }[];
 }
 
 function Chat({ data }: Props) {
   const [messages, setMessages] = useState(data);
   const messageEndRef = useRef<HTMLInputElement>(null);
+  console.log(messages);
 
-  const handleDelete = (arg: string) => {
+  const handleDelete = (arg1: string, arg2: string) => {
+    // console.log(arg1, arg2);
     setMessages(
       messages.filter((msg) => {
-        return msg.id !== arg;
+        return msg.id !== arg1;
       }),
     );
   };
@@ -53,9 +56,9 @@ function Chat({ data }: Props) {
   }, [messages]);
 
   return (
-    <div className="bg-zinc-100 p-3 min-h-[65vh] rounded-sm shadow-sm">
+    <div className="bg-zinc-100 p-3 min-h-[65vh] rounded-sm shadow-sm flex flex-col gap-5">
       {messages.map((msg, index) => (
-        <div key={index}>
+        <div key={index} className="flex items-center">
           <div className="flex items-center gap-5 bg-orange-300 p-3 rounded-sm shadow-sm w-fit">
             <Image
               src={msg.User?.image as string}
@@ -66,15 +69,11 @@ function Chat({ data }: Props) {
             />
             <p>{msg.message}</p>
           </div>
-          <form
-            action={async (formData) => {
-              await deleteMessage(formData);
-              handleDelete(msg.id);
-            }}
-          >
-            <input type="hidden" value={msg.id} name="message" />
-            <button>Delete</button>
-          </form>
+          <DeleteBtn
+            msgId={msg.id}
+            msgEmail={msg.email}
+            handleDelete={handleDelete}
+          />
         </div>
       ))}
       <div ref={messageEndRef}></div>

@@ -19,6 +19,7 @@ function Form() {
           type="text"
           name="message"
           placeholder="Type your message...."
+          required
           className="rounded-md bg-teal-200 shadow-md w-[100%] p-2"
         />
       </div>

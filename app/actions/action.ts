@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth"
 import prisma from "../lib/db"
 import { authOptions } from "../lib/auth"
-import { revalidatePath } from "next/cache"
+
 
 const Pusher = require('pusher')
 
@@ -41,17 +41,22 @@ export async function postData(formData: FormData) {
 }
 
 export async function deleteMessage(formData: FormData) {
+  const session = await getServerSession(authOptions)
+  const userEmail = session?.user?.email
+  const messageId = formData.get('messageId')
+  const messageEmail = formData.get('messageEmail')
+// console.log(messageId,messageEmail)
 
-try {
-  const messageId = formData.get('message')
-  await prisma.message.delete({
-    where: {
-       // @ts-ignore 
-      id: messageId
-    }
-  })
-  revalidatePath('/chat')
-} catch (error) {
-  console.error(error)
-}
+  if(messageEmail !== userEmail) return
+  try { 
+    await prisma.message.delete({
+      where: {
+        // @ts-ignore 
+        id: messageId
+      }
+    })
+   
+  } catch (error) {
+    console.error(error)
+  }
 }
