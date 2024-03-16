@@ -37,6 +37,12 @@ async function ChatPage() {
 
   return (
     <main className="p-3 flex flex-col gap-5">
+      <div>
+        <p>Server</p>
+        {data?.map((item, index) => (
+          <div key={index}>{item.message}</div>
+        ))}
+      </div>
       <Chat data={data as any} />
       <Form />
     </main>
